@@ -1,4 +1,4 @@
-defmodule App.Post do
+defmodule App.Models.Post do
   use App.Web, :model
 
   schema "posts" do

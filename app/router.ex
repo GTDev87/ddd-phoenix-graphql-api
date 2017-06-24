@@ -1,5 +1,5 @@
 defmodule App.Router do
-  use App.Web, :router
+  use Phoenix.Router
 
   pipeline :api do
     plug :accepts, ["json"]

@@ -37,3 +37,11 @@ config :app, App.Repo,
   database: "app_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :app, App.WriteRepo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "postgres",
+  password: "postgres",
+  database: "app_dev",
+  hostname: "localhost",
+  pool_size: 10
