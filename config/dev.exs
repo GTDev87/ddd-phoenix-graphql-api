@@ -10,19 +10,15 @@ config :app, App.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
-  check_origin: false,
-  watchers: [npm: ["start",
-                    cd: Path.expand("../", __DIR__)]]
+  check_origin: false
 
 
 # Watch static and templates for browser reloading.
 config :app, App.Endpoint,
   live_reload: [
     patterns: [
-      ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
-      ~r{web/views/.*(ex)$},
-      ~r{web/templates/.*(eex)$}
+      ~r{web/views/.*(ex)$}
     ]
   ]
 

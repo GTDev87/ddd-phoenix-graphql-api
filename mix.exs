@@ -40,7 +40,6 @@ defmodule App.Mixfile do
      {:cowboy, "~> 1.0"},
      {:absinthe, "~> 1.2.0"},
      {:absinthe_plug, "~> 1.1"},
-     {:absinthe_ecto, git: "https://github.com/absinthe-graphql/absinthe_ecto.git"},
      {:poison, "~> 2.2.0"},
      {:faker, "~> 0.7"}]
   end

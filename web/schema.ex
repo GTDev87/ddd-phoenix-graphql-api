@@ -39,5 +39,4 @@ defmodule App.Schema do
       resolve &App.PostResolver.delete/2
     end
   end
-
 end

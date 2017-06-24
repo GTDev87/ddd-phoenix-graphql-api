@@ -29,5 +29,4 @@ defmodule App.PostResolver do
     post = Repo.get!(Post, id)
     Repo.delete(post)
   end
-
 end

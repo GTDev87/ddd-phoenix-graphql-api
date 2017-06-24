@@ -1,6 +1,5 @@
 defmodule App.Schema.Types do
   use Absinthe.Schema.Notation
-  use Absinthe.Ecto, repo: App.Repo
  
   object :post do
     field :id, :id
