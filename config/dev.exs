@@ -45,3 +45,11 @@ config :app, App.WriteRepo,
   database: "app_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :eventstore, EventStore.Storage,
+  serializer: Commanded.Serialization.JsonSerializer,
+  username: "postgres",
+  password: "postgres",
+  database: "app_eventstore_dev",
+  hostname: "localhost",
+  pool_size: 10

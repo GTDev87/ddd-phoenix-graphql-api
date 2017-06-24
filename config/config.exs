@@ -17,6 +17,9 @@ config :app, App.Endpoint,
   pubsub: [name: App.PubSub,
            adapter: Phoenix.PubSub.PG2]
 
+config :commanded,
+  event_store_adapter: Commanded.EventStore.Adapters.EventStore
+
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",

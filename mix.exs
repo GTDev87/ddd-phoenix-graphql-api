@@ -4,7 +4,7 @@ defmodule App.Mixfile do
   def project do
     [app: :app,
      version: "0.0.1",
-     elixir: "~> 1.2",
+     elixir: "~> 1.4",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -19,7 +19,8 @@ defmodule App.Mixfile do
   def application do
     [mod: {App, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex]]
+                    :phoenix_ecto, :postgrex],
+     extra_applications: [:eventstore]]
   end
 
   # Specifies which paths to compile per environment.
@@ -30,7 +31,7 @@ defmodule App.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.2.1"},
+    [{:phoenix, "~> 1.3.0-rc.2"},
      {:phoenix_pubsub, "~> 1.0"},
      {:phoenix_ecto, "~> 3.0"},
      {:postgrex, ">= 0.0.0"},
@@ -40,8 +41,10 @@ defmodule App.Mixfile do
      {:cowboy, "~> 1.0"},
      {:absinthe, "~> 1.2.0"},
      {:absinthe_plug, "~> 1.1"},
-     {:poison, "~> 2.2.0"},
-     {:faker, "~> 0.7"}]
+     {:poison, "~> 3.1"},
+     {:faker, "~> 0.7"},
+     {:commanded, "~> 0.11"},
+     {:commanded_eventstore_adapter, "~> 0.1"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
