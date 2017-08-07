@@ -12,11 +12,34 @@
 
 
 alias App.Models.Post
+alias App.Models.User
 alias App.Repo
  
+# don't run unless you really want to mess up the database
+
 for _ <- 1..10 do
   Repo.insert!(%Post{
     title: Faker.Lorem.sentence,
     body: Faker.Lorem.paragraph
   })
 end
+
+for _ <- 1..10 do
+  Repo.insert!(%User{
+    name: Faker.Name.name
+  })
+end
+
+user_ids =
+  User
+  |> Repo.all()
+  |> Enum.map(&(&1.id))
+
+Repo.all(Post)
+|> Enum.map(fn (post) ->
+    [random_user_id] = user_ids |> Enum.take_random(1)
+    post_changeset =
+      Post.changeset(%{post | user_id: random_user_id })
+    Repo.update!(post_changeset)
+   end)
+

@@ -18,7 +18,7 @@ defmodule App.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {App, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
+     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :faker, :gettext,
                     :phoenix_ecto, :postgrex],
      extra_applications: [:eventstore]]
   end
@@ -42,7 +42,7 @@ defmodule App.Mixfile do
      {:absinthe, "~> 1.2.0"},
      {:absinthe_plug, "~> 1.1"},
      {:poison, "~> 3.1"},
-     {:faker, "~> 0.7"},
+     {:faker, "~> 0.8"},
      {:commanded, "~> 0.11"},
      {:commanded_eventstore_adapter, "~> 0.1"}]
   end

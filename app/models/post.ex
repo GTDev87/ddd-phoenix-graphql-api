@@ -6,6 +6,7 @@ defmodule App.Models.Post do
   schema "posts" do
     field :title, :string
     field :body, :string
+    field :user_id, :integer
 
     timestamps()
   end
@@ -23,11 +24,13 @@ defmodule App.Models.Post do
 
     Logger.debug "made an ids query ids = #{inspect ids}"
     uniq_ids = Enum.uniq(ids)
-    query = from p in App.Models.Post,
-         where: p.id in ^uniq_ids,
-         select: p
+    query =
+      from p in App.Models.Post,
+        where: p.id in ^uniq_ids,
+        select: p
 
-    App.Repo.all(query)
+    query
+    |> App.Repo.all()
     |> Map.new(&{&1.id, &1})
   end
 end
