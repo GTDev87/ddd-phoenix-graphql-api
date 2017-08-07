@@ -2,9 +2,13 @@ defmodule App.Domains.Post do
   use Absinthe.Schema.Notation
   use Absinthe.Schema
   require Logger
+
+  import_types App.Domains.User
  
   object :post do
     field :id, :id do
+      # dependency is post_id here
+
       resolve fn id, _, _ ->
         Logger.debug "id id = #{id}"
         Absinthe.Resolution.Helpers.batch({App.Models.Post, :ids}, id, fn (batch_results) ->
@@ -14,6 +18,8 @@ defmodule App.Domains.Post do
       end
     end
     field :title, :string do
+      # dependency is post_id here
+
       resolve fn id, _, _ ->
         Logger.debug "title id = #{id}"
         Absinthe.Resolution.Helpers.batch({App.Models.Post, :ids}, id, fn (batch_results) ->
@@ -23,6 +29,8 @@ defmodule App.Domains.Post do
       end
     end
     field :body, :string do
+      # dependency is post_id here
+
       resolve fn id, _, _ ->
         Logger.debug "body id = #{id}"
         Absinthe.Resolution.Helpers.batch({App.Models.Post, :ids}, id, fn (batch_results) ->
@@ -30,6 +38,18 @@ defmodule App.Domains.Post do
         end)
       end
     end
+    field :user, :user do
+      # how do i get the user_id here if all i have access to is the id?
+      # need to indicate dependencies
+      # dependency is post(user_id) here
 
+      resolve fn _, _, _ ->
+        # Logger.debug "user user_id = #{user_id}"
+        # Absinthe.Resolution.Helpers.batch({App.Models.User, :ids}, user_id, fn (batch_results) ->
+        #   {:ok, Map.get(batch_results, id) |> Map.get(:body)}
+        # end)
+        {:ok, nil}
+      end
+    end
   end
 end
