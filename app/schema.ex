@@ -1,6 +1,6 @@
 defmodule App.Schema do
   use Absinthe.Schema
-  import_types App.Schema.Types
+  import_types App.Domains.Post
 
   query do
     field :posts, list_of(:post) do
