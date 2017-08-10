@@ -151,4 +151,11 @@ defmodule App.Lib.MultiBatch do
         pipeline
     end
   end
+
+  @spec batch(App.Lib.MultiBatch.batch_fun, term, App.Lib.MultiBatch.post_batch_fun) :: {:plugin, App.Lib.MultiBatch, term}
+  @spec batch(App.Lib.MultiBatch.batch_fun, term, App.Lib.MultiBatch.post_batch_fun, opts :: Keyword.t):: {:plugin, App.Lib.MultiBatch, term}
+  def batch(batch_fun, batch_data, post_batch_fun, opts \\ []) do
+    batch_config = {batch_fun, batch_data, post_batch_fun, opts}
+    {:middleware, App.Lib.MultiBatch, batch_config}
+  end
 end

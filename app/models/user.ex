@@ -6,7 +6,6 @@ defmodule App.Models.User do
   schema "users" do
     field :name, :string
 
-
     timestamps()
   end
 

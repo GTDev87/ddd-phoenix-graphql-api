@@ -1,13 +1,12 @@
 defmodule App.Schema do
-  use Absinthe.Schema
+  alias App.Lib.MultiBatchAbsintheSchema
+  use MultiBatchAbsintheSchema
   import_types App.Domains.Post
 
   query do
-    field :posts, list_of(:post) do
-      resolve &App.PostResolver.all/2
-    end
+    field :posts, list_of(:post), resolve: &App.PostResolver.all/2
 
-    field :post, type: :post do
+    field :post, :post do
       arg :id, non_null(:id)
       resolve &App.PostResolver.find/2
     end
