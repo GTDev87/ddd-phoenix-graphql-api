@@ -58,6 +58,7 @@ defmodule App.Lib.MultiBatch do
 
   @behaviour Absinthe.Middleware
   @behaviour Absinthe.Plugin
+  require Logger
 
   @typedoc """
   The function to be called with the aggregate batch information.
@@ -91,11 +92,22 @@ defmodule App.Lib.MultiBatch do
     end
   end
 
-  def call(%{state: :unresolved} = res, {batch_key, field_data, post_batch_fun, batch_opts}) do
+  def call(%{state: :unresolved} = res, {dependency_batch_array, post_batch_fun, batch_opts}) do
+    [{batch_key, field_data}] = dependency_batch_array
+
+    # Logger.debug "call unresolved res = #{inspect res}"
+    # Logger.debug "call unresolved batch_key = #{inspect batch_key}"
+    # Logger.debug "call unresolved field_data = #{inspect field_data}"
+    # Logger.debug "call unresolved post_batch_fun = #{inspect post_batch_fun}"
+    # Logger.debug "call unresolved batch_opts = #{inspect batch_opts}"
     acc = res.acc
+
+    # in here resolve dependencies
     acc = update_in(acc[__MODULE__][:input], fn
       nil -> [{{batch_key, batch_opts}, field_data}]
-      data -> [{{batch_key, batch_opts}, field_data} | data]
+      data -> 
+        Logger.debug "data = #{inspect data}"
+        [{{batch_key, batch_opts}, field_data} | data]
     end)
 
     %{res |
@@ -105,11 +117,17 @@ defmodule App.Lib.MultiBatch do
     }
   end
   def call(%{state: :suspended} = res, {batch_key, post_batch_fun}) do
+    # Logger.debug "call suspended res = #{inspect res}"
+    # Logger.debug "call suspended batch_key = #{inspect batch_key}"
+    # Logger.debug "call suspended post_batch_fun = #{inspect post_batch_fun}"
+
     batch_data_for_fun =
       res.acc
       |> Map.fetch!(__MODULE__)
       |> Map.fetch!(:output)
       |> Map.fetch!(batch_key)
+
+    
 
     res
     |> Absinthe.Resolution.put_result(post_batch_fun.(batch_data_for_fun))
@@ -121,6 +139,8 @@ defmodule App.Lib.MultiBatch do
   end
 
   defp do_batching(input) do
+    # Logger.debug "do_batching input = #{inspect input}"
+
     input
     |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
     |> Enum.map(fn {{batch_fun, batch_opts}, batch_data}->
@@ -152,10 +172,10 @@ defmodule App.Lib.MultiBatch do
     end
   end
 
-  @spec batch(App.Lib.MultiBatch.batch_fun, term, App.Lib.MultiBatch.post_batch_fun) :: {:plugin, App.Lib.MultiBatch, term}
-  @spec batch(App.Lib.MultiBatch.batch_fun, term, App.Lib.MultiBatch.post_batch_fun, opts :: Keyword.t):: {:plugin, App.Lib.MultiBatch, term}
-  def batch(batch_fun, batch_data, post_batch_fun, opts \\ []) do
-    batch_config = {batch_fun, batch_data, post_batch_fun, opts}
+  @spec batch([{App.Lib.MultiBatch.batch_fun, term}], App.Lib.MultiBatch.post_batch_fun) :: {:plugin, App.Lib.MultiBatch, term}
+  @spec batch([{App.Lib.MultiBatch.batch_fun, term}], App.Lib.MultiBatch.post_batch_fun, opts :: Keyword.t):: {:plugin, App.Lib.MultiBatch, term}
+  def batch(dependency_batch_array, post_batch_fun, opts \\ []) do
+    batch_config = {dependency_batch_array, post_batch_fun, opts}
     {:middleware, App.Lib.MultiBatch, batch_config}
   end
 end

@@ -1,6 +1,5 @@
 defmodule App.Schema do
-  alias App.Lib.MultiBatchAbsintheSchema
-  use MultiBatchAbsintheSchema
+  use App.Lib.MultiBatchAbsintheSchema
   import_types App.Domains.Post
 
   query do
