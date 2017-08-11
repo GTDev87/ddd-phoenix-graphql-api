@@ -116,20 +116,11 @@ defmodule App.Lib.MultiBatch do
     # in here resolve dependencies
     acc = update_acc(res.acc, batch_key, batch_opts, resolved_field_data)
 
-    case next_dependency_batch_array do
-      [] ->
-        %{res |
-          state: :suspended,
-          middleware: [{__MODULE__, {batch_key, post_batch_fun}} | res.middleware],
-          acc: acc,
-        }
-      _ ->
-        %{
-          state: :unresolved,
-          middleware: [{__MODULE__, {next_dependency_batch_array, post_batch_fun, batch_opts}} | res.middleware],
-          acc: acc,
-        }
-    end
+    %{res |
+      state: :suspended,
+      middleware: [{__MODULE__, {batch_key, post_batch_fun}} | res.middleware],
+      acc: acc,
+    }
   end
   def call(%{state: :suspended} = res, {batch_key, post_batch_fun}) do
     batch_data_for_fun =
