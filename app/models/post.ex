@@ -20,7 +20,7 @@ defmodule App.Models.Post do
     |> validate_required([:title, :body])
   end
 
-  def ids(_, ids) do
+  def ids(ids) do
     Logger.debug "QUERY QUERY App.Models.Post.ids ids = #{inspect ids}"
     uniq_ids = Enum.uniq(ids)
     query =
