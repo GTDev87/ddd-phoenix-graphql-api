@@ -2,6 +2,7 @@ defmodule App.Domains.User do
   use Absinthe.Schema.Notation
   require Logger
  
+  # only expectation is id
   object :user do
     field :id, :id do
       resolve fn id, _, _ ->

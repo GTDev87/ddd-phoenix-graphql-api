@@ -2,6 +2,7 @@ defmodule App.Domains.Post do
   use Absinthe.Schema.Notation
   import_types App.Domains.User
  
+  # only expectation is id
   object :post do
     field :id, :id do
       # dependency is post_id here
