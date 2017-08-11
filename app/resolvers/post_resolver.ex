@@ -3,8 +3,6 @@ defmodule App.PostResolver do
   require Logger
 
   def all(_args, _info) do
-    Logger.debug "all called"
-
     {
       :ok,
       App.Repo.all(App.Models.Post)
@@ -14,7 +12,6 @@ defmodule App.PostResolver do
 
   def find(%{id: id}, _info) do
     ids = App.Repo.get(App.Models.Post, id)
-    Logger.debug "find ids = #{inspect ids}"
     case ids do
       nil -> {:error, "Post id #{id} not found"}
       post -> {:ok, post.id}

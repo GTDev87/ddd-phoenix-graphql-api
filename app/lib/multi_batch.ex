@@ -58,7 +58,6 @@ defmodule App.Lib.MultiBatch do
 
   @behaviour Absinthe.Middleware
   @behaviour Absinthe.Plugin
-  require Logger
 
   @typedoc """
   The function to be called with the aggregate batch information.
@@ -99,6 +98,8 @@ defmodule App.Lib.MultiBatch do
     |> Map.get(batch_key, %{})
     |> override_data_or_fn.()
   end
+  def get_previous_batched_output(acc, batch_key, override_data_or_fn) when is_atom(override_data_or_fn),
+    do: get_previous_batched_output(acc, batch_key, &(Map.get(&1, override_data_or_fn)))
   def get_previous_batched_output(_, _, override_data_or_fn), do: override_data_or_fn
 
   def update_acc(acc, batch_key, batch_opts, field_data) do
@@ -110,24 +111,35 @@ defmodule App.Lib.MultiBatch do
 
   def call(%{state: :unresolved} = res, {dependency_batch_array, post_batch_fun, batch_opts}) do
     [{batch_key, field_data} | next_dependency_batch_array] = dependency_batch_array
-
     resolved_field_data = get_previous_batched_output(res.acc, batch_key, field_data)
-
-    # in here resolve dependencies
     acc = update_acc(res.acc, batch_key, batch_opts, resolved_field_data)
 
     %{res |
       state: :suspended,
-      middleware: [{__MODULE__, {batch_key, post_batch_fun}} | res.middleware],
+      middleware: [{__MODULE__, {dependency_batch_array, post_batch_fun, batch_opts}} | res.middleware],
       acc: acc,
     }
   end
-  def call(%{state: :suspended} = res, {batch_key, post_batch_fun}) do
-    batch_data_for_fun =
-      get_previous_batched_output(res.acc, batch_key, &(&1)) #passes identity through
+  def call(%{state: :suspended} = res, {dependency_batch_array, post_batch_fun, batch_opts}) do
+    [{batch_key, field_data} | next_dependency_batch_array] = dependency_batch_array
+    case next_dependency_batch_array do
+      [] ->
+        batch_data_for_fun =
+          get_previous_batched_output(res.acc, batch_key, &(&1)) #passes identity through
+        res
+        |> Absinthe.Resolution.put_result(post_batch_fun.(batch_data_for_fun))
+      _ ->
 
-    res
-    |> Absinthe.Resolution.put_result(post_batch_fun.(batch_data_for_fun))
+        next_resolved_field_data = get_previous_batched_output(res.acc, batch_key, field_data)
+        [{next_batch_key, next_field_data} | _] = next_dependency_batch_array
+        acc = update_acc(res.acc, next_batch_key, batch_opts, next_resolved_field_data)
+
+        %{res |
+          state: :suspended,
+          middleware: [{__MODULE__, {next_dependency_batch_array, post_batch_fun, batch_opts}} | res.middleware],
+          acc: acc,
+        }
+    end
   end
 
   def after_resolution(acc) do
@@ -136,8 +148,6 @@ defmodule App.Lib.MultiBatch do
   end
 
   defp do_batching(input) do
-    # Logger.debug "do_batching input = #{inspect input}"
-
     input
     |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
     |> Enum.map(fn {{batch_fun, batch_opts}, batch_data}->
