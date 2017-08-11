@@ -101,27 +101,20 @@ defmodule App.Lib.MultiBatch do
   end
   def get_previous_batched_output(_, _, override_data_or_fn), do: override_data_or_fn
 
+  def update_acc(acc, batch_key, batch_opts, field_data) do
+    update_in(acc[__MODULE__][:input], fn
+      nil -> [{{batch_key, batch_opts}, field_data}]
+      data -> [{{batch_key, batch_opts}, field_data} | data]
+    end)
+  end
+
   def call(%{state: :unresolved} = res, {dependency_batch_array, post_batch_fun, batch_opts}) do
     [{batch_key, field_data} | next_dependency_batch_array] = dependency_batch_array
-    acc = res.acc
 
-    resolved_field_data =
-      get_previous_batched_output(acc, batch_key, field_data)
+    resolved_field_data = get_previous_batched_output(res.acc, batch_key, field_data)
 
     # in here resolve dependencies
-    acc = update_in(acc[__MODULE__][:input], fn
-      nil -> [{{batch_key, batch_opts}, resolved_field_data}]
-      data -> [{{batch_key, batch_opts}, resolved_field_data} | data]
-    end)
-
-    # if there is another level need to pass this through
-    batch_data_for_fun =
-      acc
-      |> Map.get(__MODULE__, %{})
-      |> Map.get(:output, %{})
-      |> Map.get(batch_key)
-
-    Logger.debug "call unresolved batch_data_for_fun = #{inspect batch_data_for_fun}"
+    acc = update_acc(res.acc, batch_key, batch_opts, resolved_field_data)
 
     case next_dependency_batch_array do
       [] ->
