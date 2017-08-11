@@ -50,7 +50,6 @@ defmodule App.Domains.Post do
       resolve fn id, _, _ ->
         # Logger.debug "body id = #{id}"
         App.Lib.MultiBatch.batch_dependencies([{&App.Models.Post.ids/1, id}, {&App.Models.User.ids/1, :user_id}], fn (batch_results) ->
-          Logger
           {:ok, batch_results |> Map.get(id) |> Map.get(:name)}
         end)
       end
