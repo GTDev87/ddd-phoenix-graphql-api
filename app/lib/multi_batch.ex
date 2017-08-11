@@ -143,12 +143,22 @@ defmodule App.Lib.MultiBatch do
   end
 
   def after_resolution(acc) do
-    output = do_batching(acc[__MODULE__][:input])
-    put_in(acc[__MODULE__][:output], output)
+    output = do_batching(acc)
+    merged_output = Map.merge(acc[__MODULE__][:output], output)
+    put_in(acc[__MODULE__][:output], merged_output)
   end
 
-  defp do_batching(input) do
-    input
+  defp do_batching(acc) do
+    acc
+    |> Map.get(__MODULE__, %{})
+    |> Map.get(:input, %{})
+    |> Enum.reject(fn({{fun_tuple, _}, batch_data}) ->
+        acc
+        |> Map.get(__MODULE__, %{})
+        |> Map.get(:output, %{})
+        |> Map.get(fun_tuple, %{})
+        |> Map.has_key?(batch_data)
+      end)
     |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
     |> Enum.map(fn {{batch_fun, batch_opts}, batch_data}->
       {batch_opts, Task.async(fn ->

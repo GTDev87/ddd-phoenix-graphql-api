@@ -19,7 +19,7 @@ defmodule App.Models.User do
   end
 
   def ids(_, ids) do
-    Logger.debug "App.Models.User.ids ids = #{inspect ids}"
+    Logger.debug "QUERY QUERY App.Models.User.ids ids = #{inspect ids}"
     uniq_ids = Enum.uniq(ids)
     query =
       from u in App.Models.User,
