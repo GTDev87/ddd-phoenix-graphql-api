@@ -9,7 +9,7 @@ defmodule App.Domains.Post do
     field :id, :id do
       # dependency is post_id here
       resolve fn id, _, _ ->
-        App.Lib.MultiBatch.batch_dependencies([{&App.Models.Post.ids/1, id}], fn (batch_results) ->
+        App.Lib.MultiBatch.batch_dependency({&App.Models.Post.ids/1, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:id)}
         end)
       end
@@ -17,7 +17,7 @@ defmodule App.Domains.Post do
     field :title, :string do
       # dependency is post_id here
       resolve fn id, _, _ ->
-        App.Lib.MultiBatch.batch_dependencies([{&App.Models.Post.ids/1, id}], fn (batch_results) ->
+        App.Lib.MultiBatch.batch_dependency({&App.Models.Post.ids/1, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:title)}
         end)
       end
@@ -25,7 +25,7 @@ defmodule App.Domains.Post do
     field :body, :string do
       # dependency is post_id here
       resolve fn id, _, _ ->
-        App.Lib.MultiBatch.batch_dependencies([{&App.Models.Post.ids/1, id}], fn (batch_results) ->
+        App.Lib.MultiBatch.batch_dependency({&App.Models.Post.ids/1, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:body)}
         end)
       end
@@ -37,7 +37,7 @@ defmodule App.Domains.Post do
 
       resolve fn id, _, _ ->
         # Logger.debug "body id = #{id}"
-        App.Lib.MultiBatch.batch_dependencies([{&App.Models.Post.ids/1, id}, {&App.Models.User.ids/1, :user_id}], fn (batch_results) ->
+        App.Lib.MultiBatch.batch_serial_dependencies([{&App.Models.Post.ids/1, id}, {&App.Models.User.ids/1, :user_id}], fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:id)}
         end)
       end
@@ -49,7 +49,7 @@ defmodule App.Domains.Post do
 
       resolve fn id, _, _ ->
         # Logger.debug "body id = #{id}"
-        App.Lib.MultiBatch.batch_dependencies([{&App.Models.Post.ids/1, id}, {&App.Models.User.ids/1, :user_id}], fn (batch_results) ->
+        App.Lib.MultiBatch.batch_serial_dependencies([{&App.Models.Post.ids/1, id}, {&App.Models.User.ids/1, :user_id}], fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:name)}
         end)
       end
