@@ -26,8 +26,8 @@ defmodule App.Models.User do
         where: u.id in ^uniq_ids,
         select: u
 
-    query
-    |> App.Repo.all()
+    type = :query
+    App.ReadWriteRepo.all(type, query)
     |> Map.new(&{&1.id, &1})
   end
 end
