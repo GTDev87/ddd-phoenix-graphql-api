@@ -8,7 +8,10 @@ defmodule App.Domains.Post do
   object :post do
     field :id, :id do
       # dependency is post_id here
-      resolve fn id, _, _ ->
+      resolve fn id, _, info ->
+        type = App.Lib.Resolver.query_type(info)
+        # Logger.debug "post id type = #{type}"
+
         App.Lib.MultiBatch.batch_dependency({&App.Models.Post.ids/1, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:id)}
         end)
@@ -16,7 +19,10 @@ defmodule App.Domains.Post do
     end
     field :title, :string do
       # dependency is post_id here
-      resolve fn id, _, _ ->
+      resolve fn id, _, info ->
+        type = App.Lib.Resolver.query_type(info)
+        # Logger.debug "post title type = #{type}"
+
         App.Lib.MultiBatch.batch_dependency({&App.Models.Post.ids/1, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:title)}
         end)
@@ -24,7 +30,10 @@ defmodule App.Domains.Post do
     end
     field :body, :string do
       # dependency is post_id here
-      resolve fn id, _, _ ->
+      resolve fn id, _, info ->
+        type = App.Lib.Resolver.query_type(info)
+        # Logger.debug "post body type = #{type}"
+
         App.Lib.MultiBatch.batch_dependency({&App.Models.Post.ids/1, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:body)}
         end)
@@ -35,10 +44,12 @@ defmodule App.Domains.Post do
       # need to indicate dependencies
       # dependency is post(user_id) here
 
-      resolve fn id, _, _ ->
-        # Logger.debug "body id = #{id}"
+      resolve fn id, _, info ->
+        type = App.Lib.Resolver.query_type(info)
+        # Logger.debug "post user type = #{type}"
         App.Lib.MultiBatch.batch_serial_dependencies([{&App.Models.Post.ids/1, id}, {&App.Models.User.ids/1, :user_id}], fn (batch_results) ->
-          {:ok, batch_results |> Map.get(id) |> Map.get(:id)}
+
+          {:ok, batch_results |> Map.get(id, %{}) |> Map.get(:id)}
         end)
       end
     end
@@ -47,8 +58,11 @@ defmodule App.Domains.Post do
       # need to indicate dependencies
       # dependency is post(user_id) here
 
-      resolve fn id, _, _ ->
-        # Logger.debug "body id = #{id}"
+
+
+      resolve fn id, _, info ->
+        type = App.Lib.Resolver.query_type(info)
+        # Logger.debug "post user_name type = #{type}"
         App.Lib.MultiBatch.batch_serial_dependencies([{&App.Models.Post.ids/1, id}, {&App.Models.User.ids/1, :user_id}], fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:name)}
         end)

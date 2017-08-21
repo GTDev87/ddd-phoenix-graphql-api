@@ -23,6 +23,7 @@ defmodule App.Models.Post do
   def ids(ids) do
     Logger.debug "QUERY QUERY App.Models.Post.ids ids = #{inspect ids}"
     uniq_ids = Enum.uniq(ids)
+    
     query =
       from p in App.Models.Post,
         where: p.id in ^uniq_ids,
