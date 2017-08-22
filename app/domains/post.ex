@@ -9,12 +9,9 @@ defmodule App.Domains.Post do
     field :id, :id do
       # dependency is post_id here
       resolve fn id, _, info ->
-        type = App.Lib.Resolver.query_type(info)
-        # Logger.debug "post id type = #{type}"
-
-        App.Lib.MultiBatch.batch_dependency({&App.Models.Post.ids/1, id}, fn (batch_results) ->
+        App.Lib.MultiBatch.batch_dependency({&App.Models.Post.ids/2, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:id)}
-        end)
+        end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
     field :title, :string do
@@ -23,9 +20,9 @@ defmodule App.Domains.Post do
         type = App.Lib.Resolver.query_type(info)
         # Logger.debug "post title type = #{type}"
 
-        App.Lib.MultiBatch.batch_dependency({&App.Models.Post.ids/1, id}, fn (batch_results) ->
+        App.Lib.MultiBatch.batch_dependency({&App.Models.Post.ids/2, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:title)}
-        end)
+        end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
     field :body, :string do
@@ -34,9 +31,9 @@ defmodule App.Domains.Post do
         type = App.Lib.Resolver.query_type(info)
         # Logger.debug "post body type = #{type}"
 
-        App.Lib.MultiBatch.batch_dependency({&App.Models.Post.ids/1, id}, fn (batch_results) ->
+        App.Lib.MultiBatch.batch_dependency({&App.Models.Post.ids/2, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:body)}
-        end)
+        end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
     field :user, :user do
@@ -47,10 +44,10 @@ defmodule App.Domains.Post do
       resolve fn id, _, info ->
         type = App.Lib.Resolver.query_type(info)
         # Logger.debug "post user type = #{type}"
-        App.Lib.MultiBatch.batch_serial_dependencies([{&App.Models.Post.ids/1, id}, {&App.Models.User.ids/1, :user_id}], fn (batch_results) ->
+        App.Lib.MultiBatch.batch_serial_dependencies([{&App.Models.Post.ids/2, id}, {&App.Models.User.ids/2, :user_id}], fn (batch_results) ->
 
           {:ok, batch_results |> Map.get(id, %{}) |> Map.get(:id)}
-        end)
+        end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
     field :user_name, :string do
@@ -63,9 +60,9 @@ defmodule App.Domains.Post do
       resolve fn id, _, info ->
         type = App.Lib.Resolver.query_type(info)
         # Logger.debug "post user_name type = #{type}"
-        App.Lib.MultiBatch.batch_serial_dependencies([{&App.Models.Post.ids/1, id}, {&App.Models.User.ids/1, :user_id}], fn (batch_results) ->
+        App.Lib.MultiBatch.batch_serial_dependencies([{&App.Models.Post.ids/2, id}, {&App.Models.User.ids/2, :user_id}], fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:name)}
-        end)
+        end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
   end

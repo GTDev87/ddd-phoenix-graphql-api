@@ -6,22 +6,16 @@ defmodule App.Domains.User do
   object :user do
     field :id, :id do
       resolve fn id, _, info ->
-        type = App.Lib.Resolver.query_type(info)
-        # Logger.debug "user id type = #{type}"
-
-        App.Lib.MultiBatch.batch_dependency({&App.Models.User.ids/1, id}, fn (batch_results) ->
+        App.Lib.MultiBatch.batch_dependency({&App.Models.User.ids/2, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:id)}
-        end)
+        end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
     field :name, :string do
       resolve fn id, _, info ->
-        type = App.Lib.Resolver.query_type(info)
-        # Logger.debug "user name type = #{type}"
-
-        App.Lib.MultiBatch.batch_dependency({&App.Models.User.ids/1, id}, fn (batch_results) ->
+        App.Lib.MultiBatch.batch_dependency({&App.Models.User.ids/2, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:name)}
-        end)
+        end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
   end

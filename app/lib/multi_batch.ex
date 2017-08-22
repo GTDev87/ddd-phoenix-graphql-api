@@ -162,7 +162,7 @@ defmodule App.Lib.MultiBatch do
     |> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
     |> Enum.map(fn {{batch_fun, batch_opts}, batch_data}->
       {batch_opts, Task.async(fn ->
-        {batch_fun, batch_fun.(batch_data)}
+        {batch_fun, batch_fun.(batch_data, batch_opts)}
       end)}
     end)
     |> Map.new(fn {batch_opts, task} ->

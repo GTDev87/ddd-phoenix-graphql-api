@@ -20,17 +20,17 @@ defmodule App.Models.Post do
     |> validate_required([:title, :body])
   end
 
-  def ids(ids) do
+  def ids(ids, options) do
     Logger.debug "QUERY QUERY App.Models.Post.ids ids = #{inspect ids}"
     uniq_ids = Enum.uniq(ids)
-    
+
     query =
       from p in App.Models.Post,
         where: p.id in ^uniq_ids,
         select: p
-
-    type = :query
-    App.ReadWriteRepo.all(type, query)
+    options
+    |> Keyword.get(:query_type, %{})
+    |> App.ReadWriteRepo.all(query)
     |> Map.new(&{&1.id, &1})
   end
 end
