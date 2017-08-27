@@ -8,28 +8,28 @@ defmodule App.Post do
   object :post do
     field :id, :id do
       resolve fn id, _, info ->
-        App.Lib.MultiBatch.batch_dependency({&App.Post.Post.ids/2, id}, fn (batch_results) ->
+        MapBatcher.MultiBatch.batch_dependency({&App.Post.Post.ids/2, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:id)}
         end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
     field :title, :string do
       resolve fn id, _, info ->
-        App.Lib.MultiBatch.batch_dependency({&App.Post.Post.ids/2, id}, fn (batch_results) ->
+        MapBatcher.MultiBatch.batch_dependency({&App.Post.Post.ids/2, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:title)}
         end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
     field :body, :string do
       resolve fn id, _, info ->
-        App.Lib.MultiBatch.batch_dependency({&App.Post.Post.ids/2, id}, fn (batch_results) ->
+        MapBatcher.MultiBatch.batch_dependency({&App.Post.Post.ids/2, id}, fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:body)}
         end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
     field :user, :user do
       resolve fn id, _, info ->
-        App.Lib.MultiBatch.batch_serial_dependencies([{&App.Post.Post.ids/2, id}, {&App.User.User.ids/2, :user_id}], fn (batch_results) ->
+        MapBatcher.MultiBatch.batch_serial_dependencies([{&App.Post.Post.ids/2, id}, {&App.User.User.ids/2, :user_id}], fn (batch_results) ->
 
           {:ok, batch_results |> Map.get(id, %{}) |> Map.get(:id)}
         end, query_type: App.Lib.Resolver.query_type(info))
@@ -37,7 +37,7 @@ defmodule App.Post do
     end
     field :user_name, :string do
       resolve fn id, _, info ->
-        App.Lib.MultiBatch.batch_serial_dependencies([{&App.Post.Post.ids/2, id}, {&App.User.User.ids/2, :user_id}], fn (batch_results) ->
+        MapBatcher.MultiBatch.batch_serial_dependencies([{&App.Post.Post.ids/2, id}, {&App.User.User.ids/2, :user_id}], fn (batch_results) ->
           {:ok, batch_results |> Map.get(id) |> Map.get(:name)}
         end, query_type: App.Lib.Resolver.query_type(info))
       end

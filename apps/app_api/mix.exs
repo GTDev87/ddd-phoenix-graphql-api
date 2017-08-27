@@ -46,7 +46,8 @@ defmodule AppApi.Mixfile do
      {:absinthe_plug, "~> 1.4.0-beta.1"},
      {:poison, "~> 3.1"},
      {:faker, "~> 0.8"},
-     {:app, in_umbrella: true}]
+     {:app, in_umbrella: true},
+     {:map_batcher, in_umbrella: true}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

@@ -1,4 +1,4 @@
-defmodule App.Lib.MultiBatch do
+defmodule MapBatcher.MultiBatch do
   @moduledoc """
   Batch the resolution of multiple fields.
   ## Motivation
@@ -189,24 +189,24 @@ defmodule App.Lib.MultiBatch do
     end
   end
 
-  @spec batch_serial_dependencies([{App.Lib.MultiBatch.batch_fun, term}], App.Lib.MultiBatch.post_batch_fun) :: {:plugin, App.Lib.MultiBatch, term}
-  @spec batch_serial_dependencies([{App.Lib.MultiBatch.batch_fun, term}], App.Lib.MultiBatch.post_batch_fun, opts :: Keyword.t):: {:plugin, App.Lib.MultiBatch, term}
+  @spec batch_serial_dependencies([{MapBatcher.MultiBatch.batch_fun, term}], MapBatcher.MultiBatch.post_batch_fun) :: {:plugin, MapBatcher.MultiBatch, term}
+  @spec batch_serial_dependencies([{MapBatcher.MultiBatch.batch_fun, term}], MapBatcher.MultiBatch.post_batch_fun, opts :: Keyword.t):: {:plugin, MapBatcher.MultiBatch, term}
   def batch_serial_dependencies(dependency_batch_array, post_batch_fun, opts \\ []) do
     batch_config = {dependency_batch_array, post_batch_fun, opts}
-    {:middleware, App.Lib.MultiBatch, batch_config}
+    {:middleware, MapBatcher.MultiBatch, batch_config}
   end
 
-  @spec batch_dependency({App.Lib.MultiBatch.batch_fun, term}, App.Lib.MultiBatch.post_batch_fun) :: {:plugin, App.Lib.MultiBatch, term}
-  @spec batch_dependency({App.Lib.MultiBatch.batch_fun, term}, App.Lib.MultiBatch.post_batch_fun, opts :: Keyword.t):: {:plugin, App.Lib.MultiBatch, term}
+  @spec batch_dependency({MapBatcher.MultiBatch.batch_fun, term}, MapBatcher.MultiBatch.post_batch_fun) :: {:plugin, MapBatcher.MultiBatch, term}
+  @spec batch_dependency({MapBatcher.MultiBatch.batch_fun, term}, MapBatcher.MultiBatch.post_batch_fun, opts :: Keyword.t):: {:plugin, MapBatcher.MultiBatch, term}
   def batch_dependency(dependency_batch, post_batch_fun, opts \\ []) do
     batch_config = {[dependency_batch], post_batch_fun, opts}
-    {:middleware, App.Lib.MultiBatch, batch_config}
+    {:middleware, MapBatcher.MultiBatch, batch_config}
   end
 
-  # @spec batch_parallel_dependencies([{App.Lib.MultiBatch.batch_fun, term}], App.Lib.MultiBatch.post_batch_fun) :: {:plugin, App.Lib.MultiBatch, term}
-  # @spec batch_parallel_dependencies([{App.Lib.MultiBatch.batch_fun, term}], App.Lib.MultiBatch.post_batch_fun, opts :: Keyword.t):: {:plugin, App.Lib.MultiBatch, term}
+  # @spec batch_parallel_dependencies([{MapBatcher.MultiBatch.batch_fun, term}], MapBatcher.MultiBatch.post_batch_fun) :: {:plugin, MapBatcher.MultiBatch, term}
+  # @spec batch_parallel_dependencies([{MapBatcher.MultiBatch.batch_fun, term}], MapBatcher.MultiBatch.post_batch_fun, opts :: Keyword.t):: {:plugin, MapBatcher.MultiBatch, term}
   # def batch_parallel_dependencies(dependency_batch_array, post_batch_fun, opts \\ []) do
   #   batch_config = {dependency_batch_array, post_batch_fun, opts}
-  #   {:middleware, App.Lib.MultiBatch, batch_config}
+  #   {:middleware, MapBatcher.MultiBatch, batch_config}
   # end
 end

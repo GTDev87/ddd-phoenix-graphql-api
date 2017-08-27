@@ -1,5 +1,5 @@
 defmodule AppApi.Schema do
-  use App.Lib.MultiBatchAbsintheSchema
+  use MapBatcher.MultiBatchAbsintheSchema
   import_types App.Post
 
   query do

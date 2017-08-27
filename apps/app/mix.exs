@@ -39,7 +39,8 @@ defmodule App.Mixfile do
      {:absinthe_plug, "~> 1.4.0-beta.1"},
      {:commanded, "~> 0.11"},
      {:commanded_eventstore_adapter, "~> 0.1"},
-     {:ecto, "~> 2.1-rc"}]
+     {:ecto, "~> 2.1-rc"},
+     {:map_batcher, in_umbrella: true}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
