@@ -1,5 +1,5 @@
 defmodule App.Post.Post do
-  use App.Web, :model
+  use App.Schema
 
   require Logger
 

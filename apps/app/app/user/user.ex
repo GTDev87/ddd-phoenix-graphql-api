@@ -1,5 +1,5 @@
 defmodule App.User.User do
-  use App.Web, :model
+  use App.Schema
 
   require Logger
 
