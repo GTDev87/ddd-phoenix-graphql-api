@@ -1,13 +1,13 @@
 defmodule AppApi.Schema do
-  use AppApi.Lib.MultiBatchAbsintheSchema
-  import_types AppApi.Domains.Post
+  use App.Lib.MultiBatchAbsintheSchema
+  import_types App.Post
 
   query do
-    field :posts, list_of(:post), resolve: &AppApi.PostResolver.all/2
+    field :posts, list_of(:post), resolve: &App.Post.all/2
 
     field :post, :post do
       arg :id, non_null(:id)
-      resolve &AppApi.PostResolver.find/2
+      resolve &App.Post.find/2
     end
   end
 
@@ -21,20 +21,20 @@ defmodule AppApi.Schema do
       arg :title, non_null(:string)
       arg :body, non_null(:string)
 
-      resolve &AppApi.PostResolver.create/2
+      resolve &App.Post.create/2
     end
 
     field :update_post, type: :post do
       arg :id, non_null(:integer)
       arg :post, :update_post_params
 
-      resolve &AppApi.PostResolver.update/2
+      resolve &App.Post.update/2
     end
 
     field :delete_post, type: :post do
       arg :id, non_null(:integer)
 
-      resolve &AppApi.PostResolver.delete/2
+      resolve &App.Post.delete/2
     end
   end
 end

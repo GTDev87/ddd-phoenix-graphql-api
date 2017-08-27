@@ -1,4 +1,4 @@
-defmodule AppApi.Lib.RepoUtils do
+defmodule App.Lib.RepoUtils do
   def create_args(_, 0),
     do: []
   def create_args(fn_mdl, arg_cnt),

@@ -1,4 +1,4 @@
-defmodule AppApi.Repo.Migrations.AddUserIdToPosts do
+defmodule App.Repo.Migrations.AddUserIdToPosts do
   use Ecto.Migration
 
 

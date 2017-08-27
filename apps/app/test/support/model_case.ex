@@ -1,4 +1,4 @@
-defmodule AppApi.ModelCase do
+defmodule App.ModelCase do
   @moduledoc """
   This module defines the test case to be used by
   model tests.
@@ -15,9 +15,23 @@ defmodule AppApi.ModelCase do
   use ExUnit.CaseTemplate
 
   using do
+    quote do
+      alias App.Repo
+
+      import Ecto
+      import Ecto.Changeset
+      import Ecto.Query
+      import App.ModelCase
+    end
   end
 
   setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(App.Repo)
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(App.Repo, {:shared, self()})
+    end
+
     :ok
   end
 end

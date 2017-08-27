@@ -5,15 +5,15 @@
 # Inside the script, you can read and write to any of your
 # repositories directly:
 #
-#     AppApi.Repo.insert!(%MyApp.SomeModel{})
+#     App.Repo.insert!(%MyApp.SomeModel{})
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
 
-alias AppApi.Models.Post
-alias AppApi.Models.User
-alias AppApi.Repo
+alias App.Post.Post
+alias App.User.User
+alias App.Repo
  
 # don't run unless you really want to mess up the database
 

@@ -1,4 +1,4 @@
-defmodule AppApi.Lib.Resolver do
+defmodule App.Lib.Resolver do
   require Logger
   def query_type(info) do
     

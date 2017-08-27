@@ -1,5 +1,5 @@
-defmodule AppApi.Models.Post do
-  use AppApi.Web, :model
+defmodule App.Post.Post do
+  use App.Web, :model
 
   require Logger
 
@@ -21,16 +21,16 @@ defmodule AppApi.Models.Post do
   end
 
   def ids(ids, options) do
-    Logger.debug "QUERY QUERY AppApi.Models.Post.ids ids = #{inspect ids}"
+    Logger.debug "QUERY QUERY App.Post.Post.ids ids = #{inspect ids}"
     uniq_ids = Enum.uniq(ids)
 
     query =
-      from p in AppApi.Models.Post,
+      from p in App.Post.Post,
         where: p.id in ^uniq_ids,
         select: p
     options
     |> Keyword.get(:query_type, %{})
-    |> AppApi.ReadWriteRepo.all(query)
+    |> App.ReadWriteRepo.all(query)
     |> Map.new(&{&1.id, &1})
   end
 end

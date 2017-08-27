@@ -6,16 +6,11 @@
 use Mix.Config
 
 # General application configuration
-config :app_api,
-  ecto_repos: []
+config :app,
+  ecto_repos: [App.Repo, App.WriteRepo]
 
-# Configures the endpoint
-config :app_api, AppApi.Endpoint,
-  url: [host: "localhost"],
-  secret_key_base: "q+YJWIzmULVdW3+l8Pf4EOh1dSgEmg4CuNd8GzMRsS/SzDF6F5rckfjAn4Q0jKK1",
-  render_errors: [view: AppApi.ErrorView, accepts: ~w(html json)],
-  pubsub: [name: AppApi.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+config :commanded,
+  event_store_adapter: Commanded.EventStore.Adapters.EventStore
 
 # Configures Elixir's Logger
 config :logger, :console,

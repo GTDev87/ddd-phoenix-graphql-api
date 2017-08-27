@@ -1,14 +1,14 @@
-defmodule AppApi.Mixfile do
+defmodule App.Mixfile do
   use Mix.Project
 
   def project do
-    [app: :app_api,
+    [app: :app,
      version: "0.0.1",
+     elixir: "~> 1.4",
      build_path: "../../_build",
      config_path: "../../config/config.exs",
      deps_path: "../../deps",
      lockfile: "../../mix.lock",
-     elixir: "~> 1.4",
      elixirc_paths: elixirc_paths(Mix.env),
      compilers: [:phoenix, :gettext] ++ Mix.compilers,
      build_embedded: Mix.env == :prod,
@@ -21,10 +21,9 @@ defmodule AppApi.Mixfile do
   #
   # Type `mix help compile.app` for more information.
   def application do
-    [mod: {AppApi, []},
-     applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :faker, :gettext,
-                    :phoenix_ecto, :app]
-     ]
+    [mod: {App, []},
+     applications: [:logger, :faker, :postgrex, :ecto],
+     extra_applications: [:eventstore]]
   end
 
   # Specifies which paths to compile per environment.
@@ -35,18 +34,12 @@ defmodule AppApi.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.3.0-rc.2"},
-     {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_ecto, "~> 3.0"},
-     {:phoenix_html, "~> 2.6"},
-     {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:gettext, "~> 0.11"},
-     {:cowboy, "~> 1.0"},
+    [{:postgrex, ">= 0.0.0"},
      {:absinthe, "~> 1.4.0-beta.3"},
      {:absinthe_plug, "~> 1.4.0-beta.1"},
-     {:poison, "~> 3.1"},
-     {:faker, "~> 0.8"},
-     {:app, in_umbrella: true}]
+     {:commanded, "~> 0.11"},
+     {:commanded_eventstore_adapter, "~> 0.1"},
+     {:ecto, "~> 2.1-rc"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
@@ -56,6 +49,8 @@ defmodule AppApi.Mixfile do
   #
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
-    ["test": ["test"]]
+    ["ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+     "ecto.reset": ["ecto.drop", "ecto.setup"],
+     "test": ["ecto.create --quiet", "ecto.migrate", "test"]]
   end
 end

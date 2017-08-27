@@ -1,4 +1,4 @@
-defmodule AppApi.Repo.Migrations.AddEventStore do
+defmodule App.Repo.Migrations.AddEventStore do
   use Ecto.Migration
 
   def up do

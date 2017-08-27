@@ -9,27 +9,3 @@ config :app_api, AppApi.Endpoint,
 # Print only warnings and errors during test
 config :logger, level: :warn
 
-# Configure your database
-config :app_api, AppApi.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "app_test",
-  hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
-
-config :app_api, AppApi.WriteRepo,
-  adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
-  database: "app_test",
-  hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
-
-config :eventstore, EventStore.Storage,
-  serializer: Commanded.Serialization.JsonSerializer,
-  username: "postgres",
-  password: "postgres",
-  database: "app_eventstore_dev",
-  hostname: "localhost",
-  pool: Ecto.Adapters.SQL.Sandbox
