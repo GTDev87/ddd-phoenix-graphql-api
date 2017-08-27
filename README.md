@@ -1,10 +1,11 @@
-# Jwt Token Server
+# DDD sample application
 * Phoenix
+* Absinthe
 * GraphQL
 * PostgreSQL
 
 # About
-This is an authentication server that retruns jwts handles 3rd party OAUTH delegation.
+This is an example Domain Driven Design GraphQL Api Server application.
 
 # Running the app:
 
