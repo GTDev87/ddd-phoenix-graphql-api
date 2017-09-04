@@ -3,7 +3,10 @@ defmodule App.User.User do
 
   require Logger
 
+  # @primary_key {:uuid, :binary_id, autogenerate: false}
+
   schema "users" do
+    # field :id, :id
     field :name, :string
 
     timestamps()
@@ -21,15 +24,18 @@ defmodule App.User.User do
   def ids(ids, options) do
     Logger.debug "QUERY QUERY App.User.User.ids ids = #{inspect ids}"
 
-    uniq_ids = Enum.uniq(ids)
+    uniq_ids = ids |> Enum.filter(fn a -> a end) |> Enum.uniq()
     query =
       from u in App.User.User,
         where: u.id in ^uniq_ids,
         select: u
 
+    res =
     options
     |> Keyword.get(:query_type, %{})
     |> App.ReadWriteRepo.all(query)
     |> Map.new(&{&1.id, &1})
+    Logger.debug "res = #{inspect res}"
+    res
   end
 end

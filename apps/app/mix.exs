@@ -4,7 +4,7 @@ defmodule App.Mixfile do
   def project do
     [app: :app,
      version: "0.0.1",
-     elixir: "~> 1.4",
+     elixir: "~> 1.5",
      build_path: "../../_build",
      config_path: "../../config/config.exs",
      deps_path: "../../deps",
@@ -22,8 +22,11 @@ defmodule App.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {App, []},
-     applications: [:logger, :faker, :postgrex, :ecto],
-     extra_applications: [:eventstore]]
+     # applications: [:logger, :faker, :postgrex, :ecto],
+     extra_applications: [
+      :logger,
+        :runtime_tools,
+        :eventstore,]]
   end
 
   # Specifies which paths to compile per environment.
@@ -37,9 +40,11 @@ defmodule App.Mixfile do
     [{:postgrex, ">= 0.0.0"},
      {:absinthe, "~> 1.4.0-beta.3"},
      {:absinthe_plug, "~> 1.4.0-beta.1"},
-     {:commanded, "~> 0.11"},
+     {:commanded, "~> 0.13"},
+     {:commanded_ecto_projections, "~> 0.4"},
      {:commanded_eventstore_adapter, "~> 0.1"},
      {:ecto, "~> 2.1-rc"},
+     {:uuid, "~> 1.1"},
      {:map_batcher, in_umbrella: true}]
   end
 

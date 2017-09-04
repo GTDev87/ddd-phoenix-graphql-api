@@ -59,6 +59,8 @@ defmodule MapBatcher.MultiBatch do
   @behaviour Absinthe.Middleware
   @behaviour Absinthe.Plugin
 
+  require Logger
+
   @typedoc """
   The function to be called with the aggregate batch information.
   It comes in both a 2 tuple and 3 tuple form. The first two elements are the module
@@ -92,14 +94,20 @@ defmodule MapBatcher.MultiBatch do
   end
 
   def get_previous_batched_output(acc, batch_key, override_data_or_fn) when is_function(override_data_or_fn) do
+    Logger.debug "get_previous_batched_output acc = #{inspect acc}"
+    Logger.debug "get_previous_batched_output batch_key = #{inspect batch_key}"
+    Logger.debug "get_previous_batched_output override_data_or_fn = #{inspect override_data_or_fn}"
+
     acc
     |> Map.get(__MODULE__, %{})
     |> Map.get(:output, %{})
     |> Map.get(batch_key, %{})
     |> override_data_or_fn.()
   end
-  def get_previous_batched_output(acc, batch_key, override_data_or_fn) when is_atom(override_data_or_fn),
-    do: get_previous_batched_output(acc, batch_key, &(Map.get(&1, override_data_or_fn)))
+  # def get_previous_batched_output(acc, batch_key, override_data_or_fn) when is_atom(override_data_or_fn) do 
+  #   Logger.debug "acc = #{inspect acc}"
+  #   get_previous_batched_output(acc, batch_key, &(Map.get(&1, override_data_or_fn)))
+  # end
   def get_previous_batched_output(_, _, override_data_or_fn), do: override_data_or_fn
 
   def update_acc(acc, batch_key, batch_opts, field_data) do
@@ -108,6 +116,11 @@ defmodule MapBatcher.MultiBatch do
       data -> [{{batch_key, batch_opts}, field_data} | data]
     end)
   end
+
+  def get_intermediate_data(acc, field) when is_function(field), do: field.(acc)
+  def get_intermediate_data(acc, field) when is_atom(field), do: acc |> Map.get(field)
+  def get_intermediate_data(acc, field), do: field
+    
 
   def call(%{state: :unresolved} = res, {dependency_batch_array, post_batch_fun, batch_opts}) do
     [{batch_key, field_data} | next_dependency_batch_array] = dependency_batch_array
@@ -129,10 +142,24 @@ defmodule MapBatcher.MultiBatch do
         res
         |> Absinthe.Resolution.put_result(post_batch_fun.(batch_data_for_fun))
       _ ->
-
-        next_resolved_field_data = get_previous_batched_output(res.acc, batch_key, field_data)
         [{next_batch_key, next_field_data} | _] = next_dependency_batch_array
+        intermediate =
+          get_previous_batched_output(res.acc, batch_key, &(Map.get(&1, field_data)))
+
+        next_resolved_field_data =
+          intermediate
+          |> get_intermediate_data(next_field_data)
+
         acc = update_acc(res.acc, next_batch_key, batch_opts, next_resolved_field_data)
+
+
+        Logger.debug "next acc = #{inspect acc}"
+        Logger.debug "next field_data = #{inspect field_data}"
+        Logger.debug "next next_batch_key = #{inspect next_batch_key}"
+        Logger.debug "next batch_opts = #{inspect batch_opts}"
+        Logger.debug "next intermediate = #{inspect intermediate}"
+        Logger.debug "next next_resolved_field_data = #{inspect next_resolved_field_data}"
+        Logger.debug "next next_field_data = #{inspect next_field_data}"
 
         %{res |
           state: :suspended,

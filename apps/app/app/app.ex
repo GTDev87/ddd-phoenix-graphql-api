@@ -11,6 +11,12 @@ defmodule App do
       # Start the Ecto repository
       supervisor(App.Repo, []),
       supervisor(App.WriteRepo, []),
+
+      # Enforce unique constraints
+      worker(App.Validation.Unique, []),
+
+      # Read model projections
+      worker(App.Post.Projectors.Post, [], id: :post_aggregate_projector),
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
