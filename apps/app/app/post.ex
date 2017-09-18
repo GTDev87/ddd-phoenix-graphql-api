@@ -34,7 +34,6 @@ defmodule App.Post do
     field :user, :user do
       resolve fn uuid, _, info ->
         MapBatcher.MultiBatch.batch_serial_dependencies([{&App.Post.Post.ids/2, uuid}, {&App.User.User.ids/2, :user_id}], fn (batch_results) ->
-          
           {:ok, batch_results |> Map.get(uuid, %{}) |> Map.get(:id)}
         end, query_type: App.Lib.Resolver.query_type(info))
       end
@@ -67,7 +66,7 @@ defmodule App.Post do
 
 
   # Command routing to Event
-  
+
   # mutations
 
   def create(args, info) do
@@ -75,9 +74,10 @@ defmodule App.Post do
     args
     |> CreatePost.new()
     |> CreatePost.assign_uuid(uuid)
-    |> Conduit.Router.dispatch()
+    |> App.Router.dispatch(include_aggregate_version: true)
     |> case do
-      :ok -> {:ok, uuid}
+      {:ok, version} -> App.Notifications.wait_for(App.Post.Post, uuid)
+        # {:ok, uuid}
       reply -> reply
     end
   end

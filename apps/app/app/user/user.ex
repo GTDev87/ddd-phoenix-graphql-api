@@ -22,20 +22,15 @@ defmodule App.User.User do
   end
 
   def ids(ids, options) do
-    Logger.debug "QUERY QUERY App.User.User.ids ids = #{inspect ids}"
-
     uniq_ids = ids |> Enum.filter(fn a -> a end) |> Enum.uniq()
     query =
       from u in App.User.User,
         where: u.id in ^uniq_ids,
         select: u
 
-    res =
     options
     |> Keyword.get(:query_type, %{})
     |> App.ReadWriteRepo.all(query)
     |> Map.new(&{&1.id, &1})
-    Logger.debug "res = #{inspect res}"
-    res
   end
 end

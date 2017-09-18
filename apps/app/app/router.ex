@@ -1,4 +1,4 @@
-defmodule Conduit.Router do
+defmodule App.Router do
   use Commanded.Commands.Router
 
   alias App.Post.Aggregate.{Post}

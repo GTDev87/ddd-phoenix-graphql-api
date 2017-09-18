@@ -10,6 +10,7 @@ defmodule App do
     children = [
       # Start the Ecto repository
       supervisor(App.Repo, []),
+      supervisor(App.Post.Supervisor, []),
       supervisor(App.WriteRepo, []),
 
       # Enforce unique constraints
