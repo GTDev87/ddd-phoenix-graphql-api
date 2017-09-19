@@ -41,7 +41,7 @@ defmodule App.Post do
     field :user_name, :string do
       resolve fn uuid, _, info ->
         MapBatcher.MultiBatch.batch_serial_dependencies([{&App.Post.Post.ids/2, uuid}, {&App.User.User.ids/2, :user_id}], fn (batch_results) ->
-          {:ok, batch_results |> Map.get(uuid) |> Map.get(:name)}
+          {:ok, batch_results |> Map.get(uuid, %{}) |> Map.get(:name)}
         end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
@@ -77,7 +77,6 @@ defmodule App.Post do
     |> App.Router.dispatch(include_aggregate_version: true)
     |> case do
       {:ok, version} -> App.Notifications.wait_for(App.Post.Post, uuid)
-        # {:ok, uuid}
       reply -> reply
     end
   end

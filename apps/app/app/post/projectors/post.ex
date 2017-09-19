@@ -3,14 +3,11 @@ defmodule App.Post.Projectors.Post do
 
   alias App.Post.Events.PostCreated
 
+  def after_update(_event, _metadata, changes), do: App.Notifications.publish_changes(changes)
+
   project %PostCreated{} = created do
-
     created_map = Map.from_struct(created)
-
-    # %App.Post.Post{}
-    # |> App.Post.Post.changeset(created_map)
-    # |> App.WriteRepo.insert()
-
-    Ecto.Multi.insert(multi, :post, struct(App.Post.Post, created_map))
+    multi
+    |> Ecto.Multi.insert(:post, struct(App.Post.Post, created_map))
   end
 end
