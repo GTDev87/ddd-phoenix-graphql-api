@@ -2,7 +2,6 @@ defmodule App.Notifications do
   @doc """
   Wait until the given read model is updated to the given version
   """
-  require Logger
   def wait_for(schema, uuid) do
     case App.Repo.get_by(schema, uuid: uuid) do
       nil -> subscribe_and_wait(schema, uuid)

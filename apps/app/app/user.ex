@@ -1,6 +1,5 @@
 defmodule App.User do
   use Absinthe.Schema.Notation
-  require Logger
  
   # only expectation is id
   object :user do

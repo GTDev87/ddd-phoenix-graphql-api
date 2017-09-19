@@ -8,15 +8,12 @@ defmodule App.Post.Aggregate.Post do
   ]
 
   alias App.Post.Aggregate.Post
-
   alias App.Post.Commands.{CreatePost}
-
   alias App.Post.Events.{PostCreated}
 
   @doc """
   Publish an article
   """
-
   def execute(%Post{uuid: nil}, %CreatePost{} = create) do
     %PostCreated{
       uuid: create.uuid,

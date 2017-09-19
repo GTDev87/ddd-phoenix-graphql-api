@@ -8,7 +8,6 @@ defmodule App.User.User do
   schema "users" do
     # field :id, :id
     field :name, :string
-
     timestamps()
   end
 

@@ -9,7 +9,6 @@ defmodule App.Post.Supervisor do
     children = [
       supervisor(Registry, [:duplicate, App.Post]),
     ]
-
     supervise(children, strategy: :one_for_one)
   end
 end

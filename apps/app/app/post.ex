@@ -6,8 +6,6 @@ defmodule App.Post do
   alias App.Post.Commands.CreatePost
   alias App.Post.Events.PostCreated
 
-  require Logger
- 
   # only expectation is id
   object :post do
     field :uuid, :id do
