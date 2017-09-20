@@ -54,10 +54,10 @@ defmodule App.Post do
     }
   end
 
-  def find(%{id: id}, info) do
-    App.ReadWriteRepo.get(:query, App.Post.Post, id)
+  def find(%{uuid: uuid}, info) do
+    App.ReadWriteRepo.get(:query, App.Post.Post, uuid)
     |> case do
-      nil -> {:error, "Post id #{id} not found"}
+      nil -> {:error, "Post uuid #{uuid} not found"}
       post -> {:ok, post.uuid}
     end
   end
@@ -79,16 +79,16 @@ defmodule App.Post do
     end
   end
 
-  def update(%{id: id, post: post_params}, info) do
+  def update(%{uuid: uuid, post: post_params}, info) do
     changeset =
-      App.Repo.get!(App.Post.Post, id)
+      App.Repo.get!(App.Post.Post, uuid)
       |> App.Post.Post.changeset(post_params)
     {:ok, returned_post} = App.Repo.update(:mutation, changeset)
     {:ok, returned_post.uuid}
   end
 
-  def delete(%{id: id}, info) do
-    post = App.Repo.get!(App.Post.Post, id)
+  def delete(%{uuid: uuid}, info) do
+    post = App.Repo.get!(App.Post.Post, uuid)
     {:ok, returned_post} = App.Repo.delete(:mutation, post)
     {:ok, returned_post.uuid}
   end

@@ -6,10 +6,10 @@ defmodule AppApi.Router do
   end
 
   forward "/api", Absinthe.Plug,
-    schema: AppApi.Schema
+    schema: App.Schema
 
   forward "/graphiql", Absinthe.Plug.GraphiQL,
-    schema: AppApi.Schema
+    schema: App.Schema
 
   # Other scopes may use custom stacks.
   # scope "/api", AppApi do
