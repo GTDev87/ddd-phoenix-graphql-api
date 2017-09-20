@@ -11,21 +11,21 @@ defmodule App.Post do
     field :uuid, :id do
       resolve fn uuid, _, info ->
         MapBatcher.MultiBatch.batch_dependency({&App.Post.Post.ids/2, uuid}, fn (batch_results) ->
-          {:ok, batch_results |> Map.get(uuid) |> Map.get(:uuid)}
+          {:ok, batch_results |> Map.get(uuid, %{}) |> Map.get(:uuid)}
         end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
     field :title, :string do
       resolve fn uuid, _, info ->
         MapBatcher.MultiBatch.batch_dependency({&App.Post.Post.ids/2, uuid}, fn (batch_results) ->
-          {:ok, batch_results |> Map.get(uuid) |> Map.get(:title)}
+          {:ok, batch_results |> Map.get(uuid, %{}) |> Map.get(:title)}
         end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
     field :body, :string do
       resolve fn uuid, _, info ->
         MapBatcher.MultiBatch.batch_dependency({&App.Post.Post.ids/2, uuid}, fn (batch_results) ->
-          {:ok, batch_results |> Map.get(uuid) |> Map.get(:body)}
+          {:ok, batch_results |> Map.get(uuid, %{}) |> Map.get(:body)}
         end, query_type: App.Lib.Resolver.query_type(info))
       end
     end
@@ -81,15 +81,15 @@ defmodule App.Post do
 
   def update(%{uuid: uuid, post: post_params}, info) do
     changeset =
-      App.Repo.get!(App.Post.Post, uuid)
+      App.ReadWriteRepo.get!(:mutation, App.Post.Post, uuid)
       |> App.Post.Post.changeset(post_params)
-    {:ok, returned_post} = App.Repo.update(:mutation, changeset)
+    {:ok, returned_post} = App.ReadWriteRepo.update(:mutation, changeset)
     {:ok, returned_post.uuid}
   end
 
   def delete(%{uuid: uuid}, info) do
-    post = App.Repo.get!(App.Post.Post, uuid)
-    {:ok, returned_post} = App.Repo.delete(:mutation, post)
+    post = App.ReadWriteRepo.get!(:mutation, App.Post.Post, uuid)
+    {:ok, returned_post} = App.ReadWriteRepo.delete(:mutation, post)
     {:ok, returned_post.uuid}
   end
 end

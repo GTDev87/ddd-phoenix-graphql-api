@@ -134,7 +134,7 @@ defmodule MapBatcher.MultiBatch do
       _ ->
         [{next_batch_key, next_field_data} | _] = next_dependency_batch_array
         intermediate =
-          get_previous_batched_output(res.acc, batch_key, &(Map.get(&1, field_data)))
+          get_previous_batched_output(res.acc, batch_key, &(Map.get(&1, field_data, %{})))
 
         next_resolved_field_data =
           intermediate
